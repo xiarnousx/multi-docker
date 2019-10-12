@@ -1,0 +1,25 @@
+language: generic
+
+sudo: required
+
+services:
+    - docker
+
+before_install:
+    - docker build -t xiarnousx/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+    - docker run -e CI=true xiarnousx/react-test npm test -- --coverage
+
+after_success:
+    - docker build -t xiarnousx/multi-client ./client
+    - docker build -t xiarnousx/multi-nginx ./nginx
+    - docker build -t xiarnousx/multi-server ./server
+    - docker build -t xiarnousx/multi-worker ./worker
+    # LOGIN INTO DOCKER HUB
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    # PUSH THE IMAGES TO DOCKER HUB
+    - docker push xiarnousx/multi-client
+    - docker push xiarnousx/multi-nginx
+    - docker push xiarnousx/multi-server
+    - docker push xiarnousx/multi-worker
