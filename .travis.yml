@@ -16,7 +16,9 @@ after_success:
     - docker build -t xiarnousx/multi-nginx ./nginx
     - docker build -t xiarnousx/multi-server ./server
     - docker build -t xiarnousx/multi-worker ./worker
+    # LOGIN INTO DOCKER HUB
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    # PUSH THE IMAGES TO DOCKER HUB
     - docker push xiarnousx/multi-client
     - docker push xiarnousx/multi-nginx
     - docker push xiarnousx/multi-server
